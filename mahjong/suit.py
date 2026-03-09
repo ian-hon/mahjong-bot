@@ -48,17 +48,16 @@ class Suit(Enum):
     # 🀢🀣🀤🀥🀦🀧🀨🀩
     # 🀪
     
-    def is_consecutive(self):
-        return {
-            Suit.Characters: True,
-            Suit.Bamboo: True,
-            Suit.Dots: True,
-            Suit.Dragon: False,
-            Suit.Wind: False,
-        }[self]
-    
-    # def title(self):
-    #     return self.value
+    @staticmethod
+    def is_consecutive(suit: Suit | Dragons | Winds):
+        return isinstance(suit, Suit)
+        # return {
+        #     Suit.Characters: True,
+        #     Suit.Bamboo: True,
+        #     Suit.Dots: True,
+        #     Suit.Dragon: False,
+        #     Suit.Wind: False,
+        # }[self]
     
     def as_string(self, value):
         return {
