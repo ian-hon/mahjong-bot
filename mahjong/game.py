@@ -25,6 +25,20 @@ class Game:
         self.distribute_tiles()
         
         self.update_gamestate() # just in case
+    
+    
+    def increment_turn(self, soft=False):        
+        self.turn += 1
+        self.turn %= len(self.players)
+        
+        
+        next_player = self.players[self.turn]
+        # cannot chi, pong or kang:
+        if self.player_can_chi(next_player) or self.player_can_pong(next_player) or self.player_can_kang(next_player):
+            return
+        self.hands[self.players[self.turn]].append(self.take_tile())
+        self.sort_hands()
+    
         
     def update_gamestate(self):
         if self.get_winner() != None: # incase 0 evals to False
@@ -49,18 +63,26 @@ class Game:
         
         t = self.hands[player].pop(n)
         self.discard_pile.append(t)
+    
+    
+    def get_player_turn(self, player: str):
+        return self.players.index(player)
+    
+    
+    def is_player_turn(self, player: str):
+        return self.get_player_turn(player) == self.turn
         
     
     def player_can_chi(self, player: str):
-        return Tile.can_chi(self.discard_pile[-1], self.hands[player])
+        return (len(self.discard_pile) > 0) and Tile.can_chi(self.discard_pile[-1], self.hands[player])
     
     
     def player_can_pong(self, player: str):
-        return Tile.can_pong(self.discard_pile[-1], self.hands[player])
+        return (len(self.discard_pile) > 0) and Tile.can_pong(self.discard_pile[-1], self.hands[player])
     
     
     def player_can_kang(self, player: str):
-        return Tile.can_kang(self.discard_pile[-1], self.hands[player])
+        return (len(self.discard_pile) > 0) and Tile.can_kang(self.discard_pile[-1], self.hands[player])
     
     
     def chi(self, player: str, pattern: list[int] | None):
@@ -70,6 +92,9 @@ class Game:
         # pattern = [2, 3] -> 23_
         # pattern = [3, 5] -> 3_5
         if (pattern != None) and (len(pattern) != 2):
+            return
+        
+        if not self.discard_pile:
             return
         
         hand = self.hands[player]
@@ -109,6 +134,8 @@ class Game:
     
     def pong(self, player: str):
         hand = self.hands[player]
+        if not self.discard_pile:
+            return
         if not Tile.can_pong(self.discard_pile[-1], hand):
             return
         
@@ -125,6 +152,8 @@ class Game:
     
     def kang(self, player: str):
         hand = self.hands[player]
+        if not self.discard_pile:
+            return
         if not Tile.can_kang(self.discard_pile[-1], hand):
             return
         
@@ -154,7 +183,6 @@ class Game:
     def take_tile(self):
         # removes one tile from deck and returns it
         t = self.deck.pop(0)
-        self.discard_pile.append(t)
         return t
     
     class GameState(Enum):

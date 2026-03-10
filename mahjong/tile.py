@@ -146,7 +146,7 @@ class Tile:
         relevant = Tile.get_tile_freq(suit, tiles)
         
         if (tile.value < 0) or (tile.value >= 9):
-            return (False, 0)
+            return []
         
         return [
             [
@@ -183,13 +183,10 @@ class Tile:
         # returns True if all groups are formed; aka no more tiles are left
         s = sum(tiles.values())
         if s == 0: # tiles empty, criteria fulfilled
-            # print('empty')
             return [True, stats]
         if s == 1: # cant match
-            # print('cant match')
             return [False, stats]
         if s <= 3: # pong
-            # print('pong')
             # easiest way to find non-duplicates ig
             if len(set([k for k, v in tiles.items() if v != 0])) == 1:
                 stats[
@@ -222,7 +219,7 @@ class Tile:
                 if r[0]:
                     stats[Tile.Grouping.Chi].append([e_k, e_k + 1, e_k + 2])
                     return [True, r[1]]
-        # check pair, pong, and kong
+        # check pair, pong, and kang
         if e_v >= 2:
             # max e_v is 4
             # we try all 3?
@@ -231,7 +228,6 @@ class Tile:
                 t[e_k] -= i
                 r = Tile.can_be_grouped(t, stats)
                 if r[0]:
-                    
                     stats[
                         [
                             Tile.Grouping.Pair,
