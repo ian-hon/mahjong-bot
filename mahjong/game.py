@@ -49,6 +49,18 @@ class Game:
         
         t = self.hands[player].pop(n)
         self.discard_pile.append(t)
+        
+    
+    def player_can_chi(self, player: str):
+        return Tile.can_chi(self.discard_pile[-1], self.hands[player])
+    
+    
+    def player_can_pong(self, player: str):
+        return Tile.can_pong(self.discard_pile[-1], self.hands[player])
+    
+    
+    def player_can_kang(self, player: str):
+        return Tile.can_kang(self.discard_pile[-1], self.hands[player])
     
     
     def chi(self, player: str, pattern: list[int] | None):

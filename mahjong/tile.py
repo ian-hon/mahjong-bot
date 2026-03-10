@@ -124,8 +124,8 @@ class Tile:
         return any([
             all([
                 (
-                    (index >= 0) and
-                    (tile.value < 9) and
+                    (index + tile.value >= 0) and
+                    (index + tile.value < 9) and
                     (relevant[tile.value + index] >= 1)
                 )
                 for index in candidates
