@@ -172,11 +172,11 @@ class Tile:
     
     @staticmethod
     def can_pong(tile: Tile, tiles: list[Tile]):
-        return len([i for i in tiles if i.suit == tile.suit]) == 2
+        return len([i for i in tiles if (i.suit == tile.suit) and (i.value == tile.value)]) == 2
     
     @staticmethod
     def can_kang(tile: Tile, tiles: list[Tile]):
-        return len([i for i in tiles if i.suit == tile.suit]) == 3
+        return len([i for i in tiles if (i.suit == tile.suit) and (i.value == tile.value)]) == 3
         
     @staticmethod
     def can_be_grouped(tiles: dict[int, int], stats: dict[Grouping, list[list[int]]], consecutive=True):        

@@ -43,7 +43,8 @@ for i in range(1_000_000):
     print(f'\ndiscarded: {Tile.as_string(t)}')
     print(f'{" ".join([Tile.as_string(i) for i in g.hands['a']])}')
     g.discard_pile.append(t)
-    g.chi('a', None)
+    # g.chi('a', None)
+    # g.kang('a')
     
     # if g.state == Game.GameState.Won:
     #     print('won')
