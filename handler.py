@@ -67,12 +67,20 @@ class GameHandler:
     
     
     def construct_player_embed(self, player: str):
-        return discord.Embed(
+        result = discord.Embed(
             title=f'{player}\'s hand',
-            description=Tile.tiles_to_string(self.game.hands[player]),
+            description=f"{Tile.tiles_to_string(self.game.hands[player])}",
             colour=utils.get_embed_colour(),
             footer=discord.EmbedFooter(text=f'last updated at {datetime.now().strftime(utils.get_time_format())}')
         )
+        
+        [result.add_field(name=f"{player}'s opened tiles", value='  '.join([
+            ' '.join([Tile.as_string(i) for i in t])
+            for t in opened_tiles
+        ]
+            )) for player, opened_tiles in self.game.opened.items() if len(opened_tiles) != 0]
+        
+        return result
     
     
     async def update_messages(self, ctx: discord.ApplicationContext):

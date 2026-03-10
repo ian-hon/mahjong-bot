@@ -1,16 +1,16 @@
-import discord
-from dotenv import load_dotenv
-import os
+# import discord
+# from dotenv import load_dotenv
+# import os
 
-import commands
+# import commands
 
-load_dotenv()
+# load_dotenv()
 
-bot = discord.Bot()
+# bot = discord.Bot()
 
-commands.init(bot)
+# commands.init(bot)
 
-bot.run(os.getenv("BOT_TOKEN"))
+# bot.run(os.getenv("BOT_TOKEN"))
 
 # TODO: use private threads instead
 # each participant gets their own private thread
@@ -30,24 +30,23 @@ bot.run(os.getenv("BOT_TOKEN"))
 # if theres 2 players and one leaves, the last one is the winner
 
 
-# from mahjong.game import Game
+from mahjong.game import Game
 
-# from mahjong.tile import Tile
-
-# print(Tile.can_be_grouped({
-#     0:1,
-#     1:1,
-#     2:1
-# }))
+from mahjong.tile import Tile
 
 # Game([0])
 
-# for i in range(1_000_000):
-#     print(i)
-#     g = Game([0])
+for i in range(1_000_000):
+    # print(i)
+    g = Game(['a'])
+    t = g.take_tile()
+    print(f'\ndiscarded: {Tile.as_string(t)}')
+    print(f'{" ".join([Tile.as_string(i) for i in g.hands['a']])}')
+    g.discard_pile.append(t)
+    g.chi('a', None)
     
-#     if g.state == Game.GameState.Won:
-#         print('won')
-#         break
+    # if g.state == Game.GameState.Won:
+    #     print('won')
+    #     break
     
 

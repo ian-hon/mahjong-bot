@@ -86,21 +86,28 @@ class Tile:
             for k in [s for s in Dragons] + [s for s in Winds]
         ]
         
-        if all([r[0] for r in results]):
-            suit_list = [Suit.Characters, Suit.Bamboo, Suit.Dots] + [s for s in Dragons] + [s for s in Winds]
-            for suit, stats in zip(suit_list, [r[1].values() for r in results]):                
-                spacing = '  '
-                print(f'{suit} :', spacing.join([
-                    spacing.join([
-                        ' '.join([
-                            Suit.as_string_dyn(suit, n)
-                            for n in m
-                        ])
-                        for m in stat
-                    ])
-                    for stat in stats
-                ]))
         return all([r[0] for r in results])
+    
+    
+    @staticmethod
+    def group_tiles(results):
+        # UNUSED
+        suit_list = [Suit.Characters, Suit.Bamboo, Suit.Dots] + [s for s in Dragons] + [s for s in Winds]
+        spacing = '  '
+        return spacing.join([
+            spacing.join([
+                spacing.join([
+                    ' '.join([
+                        Suit.as_string_dyn(suit, n)
+                        for n in m
+                    ])
+                    for m in stat
+                ])
+                for stat in stats
+            ])
+            for suit, stats in zip(suit_list, [r[1].values() for r in results])
+        ])
+    
     
     @staticmethod
     def can_chi(tile: Tile, tiles: list[Tile]):
@@ -130,6 +137,37 @@ class Tile:
                 [1, 2]
             ]
         ])
+    
+    
+    @staticmethod
+    def available_chi_patterns(tile: Tile, tiles: list[Tile]):        
+        # check in a 3-wide sliding window
+        suit = cast(Suit, tile.suit)
+        relevant = Tile.get_tile_freq(suit, tiles)
+        
+        if (tile.value < 0) or (tile.value >= 9):
+            return (False, 0)
+        
+        return [
+            [
+                tile.value + index
+                for index in candidates
+            ]
+            for candidates in
+            [
+                [-2, -1],
+                [-1, 1],
+                [1, 2]
+            ]
+            if all([
+                (
+                    (index + tile.value >= 0) and
+                    (index + tile.value < 9) and
+                    (relevant[tile.value + index] >= 1)
+                )
+                for index in candidates
+            ])
+        ]
     
     
     @staticmethod
