@@ -6,6 +6,12 @@ class Tile:
     def __init__(self, suit, value=-1):
         self.suit = suit
         self.value = value
+        
+    
+    @staticmethod
+    def tiles_to_string(tiles):
+        return ' '.join([t.as_string() for t in tiles])
+    
     
     @staticmethod
     def get_full():

@@ -3,6 +3,7 @@ from discord import CategoryChannel, TextChannel
 from typing import cast
 # from mahjong.game import Game
 from handler import GameHandler
+import time
 
 def init(bot: discord.Bot):
     handler: GameHandler | None = None
@@ -13,7 +14,10 @@ def init(bot: discord.Bot):
         
     @bot.slash_command()
     async def hmm(ctx: discord.ApplicationContext):
-        await ctx.respond('test')
+        message = await ctx.respond('hmmm')
+        for i in range(30):
+            await message.edit(content=f'{i}')
+            time.sleep(0.1)
     
     
     @bot.slash_command()
@@ -58,8 +62,14 @@ def init(bot: discord.Bot):
         handler = None
         
         await ctx.respond('Succesfully ended game')
-        
-        
+    
+    
+    @bot.slash_command()
+    async def proceed(ctx: discord.ApplicationContext):
+        if handler == None:
+            await ctx.respond('No active game at the moment.')
+            return
+        await handler.update_messages(ctx)
         
     # discard
     #   choose index

@@ -17,8 +17,10 @@ class Game:
         random.shuffle(self.deck)
         random.shuffle(self.deck)
         
-        self.hands: list[list[Tile]] = [[] for _ in players]
-        self.opened: list[list[Tile]] = [[] for _ in players]
+        # self.hands: list[list[Tile]] = [[] for _ in players]
+        # self.opened: list[list[Tile]] = [[] for _ in players]
+        self.hands: dict[str, list[Tile]] = {}
+        self.opened: dict[str, list[Tile]] = {}
         
         self.discard_pile: list[Tile] = []
         
@@ -37,25 +39,28 @@ class Game:
             self.state = Game.GameState.Stalemate
     
     
-    def get_winner(self) -> None | int:
-        for index, h in enumerate(self.hands):
+    def get_winner(self) -> None | str:
+        for k, h in self.hands.items():
             if Tile.is_winning(h):
-                return index
+                return k
         return None
     
     
-    def discard(self, player: int, n: int):
+    def discard(self, player: str, n: int):
         # n is the index of tile to discard
-        if (player >= len(self.players)) or (player < 0):
+        # if (player >= len(self.players)) or (player < 0):
+        #     return
+        if not (player in self.hands):
             return
         
         t = self.hands[player].pop(n)
         self.discard_pile.append(t)
     
     
-    def chi(self, player: int):
-        if self.turn != player:
-            return
+    def chi(self, player: str, occurance: list[int]):
+        # TODO: implement
+        # if the player has 23_, 3_5, 3_5, _56 and chi a 4,
+        # we use occurance to determine which pattern they actually want to 'chi'
         hand = self.hands[player]
         
         if not Tile.can_chi(self.discard_pile[-1], hand):
@@ -67,7 +72,7 @@ class Game:
         self.update_gamestate()
         
     
-    def pong(self, player: int):
+    def pong(self, player: str):
         hand = self.hands[player]
         if not Tile.can_pong(self.discard_pile[-1], hand):
             return
@@ -78,7 +83,7 @@ class Game:
         self.update_gamestate()
     
     
-    def kang(self, player: int):
+    def kang(self, player: str):
         hand = self.hands[player]
         if not Tile.can_kang(self.discard_pile[-1], hand):
             return
@@ -91,13 +96,17 @@ class Game:
     
     def distribute_tiles(self):
         # at start of the game only
-        self.hands = [
-            [self.take_tile() for _ in range(13)]
-            for _ in self.players
-        ]
-        self.hands[0].append(self.take_tile())
+        self.hands = {
+            p:[self.take_tile() for _ in range(13)]
+            for p in self.players
+        }
+        self.hands[self.players[0]].append(self.take_tile())
         
-        self.hands = [Tile.sort_tiles(h) for h in self.hands]
+        self.sort_hands()
+    
+    
+    def sort_hands(self):
+        self.hands = {k:Tile.sort_tiles(v) for k, v in self.hands.items()}
     
         
     def take_tile(self):
